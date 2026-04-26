@@ -42,19 +42,19 @@ export default function ClassList({ config: propConfig }: { config?: { title: st
 
   return (
     <div className="max-w-7xl mx-auto px-6">
-      <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 md:mb-16 gap-4">
         <div>
-          <Badge variant="outline" className="mb-4 border-white/20 text-white/60 uppercase tracking-widest">{subtitle}</Badge>
-          <h3 className="text-4xl font-serif text-white">{title}</h3>
+          <Badge variant="outline" className="mb-4 border-brand-accent/20 text-brand-accent uppercase tracking-widest text-[10px]">{subtitle}</Badge>
+          <h3 className="text-2xl md:text-4xl font-serif text-brand-warm">{title}</h3>
         </div>
-        <a href="#schedule" className="text-sm underline underline-offset-4 text-neutral-500 hover:text-brand-ink transition-colors">
+        <a href="#schedule" className="text-xs md:text-sm underline underline-offset-4 text-neutral-500 hover:text-brand-ink transition-colors">
           전체 스케줄 보기
         </a>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
         {classes.length === 0 ? (
-          <div className="col-span-full py-20 text-center font-serif italic text-neutral-400 opacity-50">
+          <div className="col-span-full py-20 text-center font-serif italic text-neutral-400 opacity-50 text-sm">
             No active classes at the moment.
           </div>
         ) : classes.map((item, index) => (
@@ -66,10 +66,10 @@ export default function ClassList({ config: propConfig }: { config?: { title: st
             transition={{ delay: index * 0.1 }}
           >
              <Card className={`border-0 shadow-none bg-transparent group cursor-pointer ${item.isSoldOut ? 'pointer-events-none' : ''}`}>
-               <CardHeader className="p-0 overflow-hidden rounded-md mb-6 relative">
+               <CardHeader className="p-0 overflow-hidden rounded-md mb-4 md:mb-6 relative">
                  {item.isSoldOut && (
                    <div className="absolute inset-0 z-10 bg-black/60 flex items-center justify-center">
-                     <span className="text-white font-serif italic text-2xl tracking-widest border border-white/30 px-6 py-2 backdrop-blur-sm">Sold Out</span>
+                     <span className="text-white font-serif italic text-xl md:text-2xl tracking-widest border border-white/30 px-6 py-2 backdrop-blur-sm">Sold Out</span>
                    </div>
                  )}
                  <img 
@@ -80,8 +80,8 @@ export default function ClassList({ config: propConfig }: { config?: { title: st
                  />
                </CardHeader>
                <CardContent className="p-0">
-                 <div className="flex items-center gap-2 mb-4">
-                   <Badge variant="secondary" className="bg-white text-[10px] font-normal uppercase">
+                 <div className="flex items-center gap-2 mb-3 md:mb-4">
+                   <Badge variant="secondary" className="bg-neutral-100 text-neutral-600 text-[9px] md:text-[10px] font-normal uppercase">
                      {(item as any).category || 'Baking'}
                    </Badge>
                    {item.isSoldOut && (
@@ -90,14 +90,14 @@ export default function ClassList({ config: propConfig }: { config?: { title: st
                      </Badge>
                    )}
                  </div>
-                 <CardTitle className={`text-xl font-serif mb-2 ${item.isSoldOut ? 'text-neutral-400' : 'text-white'}`}>{item.title}</CardTitle>
-                 <p className={`text-sm ${item.isSoldOut ? 'text-neutral-500' : 'text-neutral-400'}`}>₩{item.price.toLocaleString()}</p>
+                 <CardTitle className={`text-lg md:text-xl font-serif mb-1 md:mb-2 ${item.isSoldOut ? 'text-neutral-400' : 'text-brand-warm'}`}>{item.title}</CardTitle>
+                 <p className={`text-xs md:text-sm ${item.isSoldOut ? 'text-neutral-500' : 'text-neutral-400'}`}>₩{item.price.toLocaleString()}</p>
                </CardContent>
-               <CardFooter className="p-0 mt-6">
+               <CardFooter className="p-0 mt-4 md:mt-6">
                  <Button 
                    variant={item.isSoldOut ? "secondary" : "outline"}
                    disabled={item.isSoldOut}
-                   className={`w-full rounded-none transition-all ${item.isSoldOut ? 'bg-neutral-100 text-neutral-400' : 'hover:bg-brand-ink hover:text-white'}`}
+                   className={`w-full text-xs md:text-sm h-10 md:h-11 rounded-none transition-all ${item.isSoldOut ? 'bg-neutral-100 text-neutral-400' : 'hover:bg-brand-ink hover:text-white border-brand-accent/20 text-brand-warm'}`}
                  >
                    {item.isSoldOut ? '신청마감' : '신청하기'}
                  </Button>

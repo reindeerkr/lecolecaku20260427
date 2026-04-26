@@ -39,9 +39,9 @@ export default function ScheduleGallery({ config: propConfig }: { config?: { tit
 
   return (
     <div className="max-w-7xl mx-auto px-6">
-      <div className="text-center mb-16">
-        <Badge variant="outline" className="mb-4 text-brand-accent border-brand-accent uppercase tracking-widest">{subtitle}</Badge>
-        <h3 className="text-4xl font-serif text-white">{title}</h3>
+      <div className="text-center mb-10 md:mb-16">
+        <Badge variant="outline" className="mb-4 text-brand-accent border-brand-accent uppercase tracking-widest text-[10px]">{subtitle}</Badge>
+        <h3 className="text-2xl md:text-4xl font-serif text-brand-warm">{title}</h3>
       </div>
       
       <Carousel className="w-full max-w-4xl mx-auto">

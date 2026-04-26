@@ -165,9 +165,9 @@ export default function App() {
             </p>
           </div>
         )}
-        <nav className="max-w-7xl mx-auto px-10 h-20 flex items-center justify-between">
+        <nav className="max-w-7xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full border border-brand-accent flex items-center justify-center opacity-60 overflow-hidden">
+            <div className="w-8 h-8 rounded-full border border-brand-accent flex items-center justify-center opacity-60 overflow-hidden shrink-0">
               {config?.logo?.imageUrl ? (
                 <img src={config.logo.imageUrl} className="w-full h-full object-contain" referrerPolicy="no-referrer" />
               ) : (
@@ -247,25 +247,25 @@ export default function App() {
         <section id="about" className="py-24">
           <About config={config?.about} />
         </section>
-        <section id="schedule" className="py-24 bg-white/40">
+        <section id="schedule" className="py-16 md:py-24 bg-neutral-50">
           <ScheduleGallery config={config?.schedule} />
         </section>
-        <section id="classes" className="py-24">
+        <section id="classes" className="py-16 md:py-24">
           <ClassList config={config?.classList} />
         </section>
-        <div className="py-24 bg-brand-warm text-white">
+        <div className="py-16 md:py-24 bg-brand-warm text-brand-ink">
           <CinematicReviews config={config?.reviews} />
         </div>
-        <section id="archive" className="py-24">
+        <section id="archive" className="py-16 md:py-24">
           <BrandTimeline config={config?.history} />
         </section>
-        <section id="recipes" className="py-24 bg-white/40">
+        <section id="recipes" className="py-16 md:py-24 bg-white/40">
           <FreeRecipeMedia config={config?.freeRecipeMedia} />
         </section>
-        <section id="contact" className="py-24">
+        <section id="contact" className="py-16 md:py-24">
           <ContactMap config={config?.mapInfo} />
         </section>
-        <div className="py-24 border-t border-brand-accent/10">
+        <div className="py-16 md:py-24 border-t border-brand-accent/10">
           <SNSFeeds config={config?.instagramFeed} />
         </div>
       </main>

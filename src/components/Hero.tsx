@@ -10,7 +10,7 @@ export default function Hero({ config, instagramUrl }: {
   const igLink = instagramUrl?.startsWith('http') ? instagramUrl : `https://instagram.com/${instagramUrl}`;
 
   return (
-    <section className="relative h-[90vh] flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-[90vh] md:h-[90vh] flex items-center justify-center overflow-hidden pt-20 md:pt-0">
       <motion.div 
         key={image}
         initial={{ scale: 1.1, opacity: 0 }}
@@ -24,15 +24,15 @@ export default function Hero({ config, instagramUrl }: {
           className="w-full h-full object-cover"
           referrerPolicy="no-referrer"
         />
-        <div className="absolute inset-0 bg-black/20" />
+        <div className="absolute inset-0 bg-black/30" />
       </motion.div>
 
-      <div className="relative z-10 text-center px-6">
+      <div className="relative z-10 text-center px-6 py-12 md:py-0">
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 1 }}
-          className="text-white/80 uppercase tracking-[0.3em] text-sm mb-6"
+          className="text-white/80 uppercase tracking-[0.2em] md:tracking-[0.3em] text-[10px] md:text-sm mb-4 md:mb-6"
         >
           {subtitle}
         </motion.p>
@@ -40,7 +40,7 @@ export default function Hero({ config, instagramUrl }: {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 1 }}
-          className="text-white text-5xl md:text-7xl font-serif leading-tight mb-8 whitespace-pre-line italic"
+          className="text-white text-3xl sm:text-4xl md:text-7xl font-serif leading-[1.2] md:leading-tight mb-8 whitespace-pre-line italic drop-shadow-lg"
         >
           {title}
         </motion.h2>

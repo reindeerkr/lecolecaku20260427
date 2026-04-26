@@ -1,0 +1,93 @@
+{
+  "entities": {
+    "Class": {
+      "title": "Baking Class",
+      "description": "Details for a baking class offering",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Title of the class" },
+        "description": { "type": "string", "description": "Detailed description" },
+        "price": { "type": "number", "description": "Class fee" },
+        "capacity": { "type": "number", "description": "Maximum students" },
+        "dates": { "type": "array", "description": "Available dates for the class" },
+        "thumbnail": { "type": "string", "description": "URL to the class thumbnail" },
+        "isActive": { "type": "boolean", "description": "Whether the class is currently open" }
+      },
+      "required": ["title", "price", "isActive"]
+    },
+    "Order": {
+      "title": "Order or Registration",
+      "description": "Customer class registration or dessert order",
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["class", "dessert"], "description": "Type of request" },
+        "customerName": { "type": "string", "description": "Name of the customer" },
+        "phone": { "type": "string", "description": "Contact number" },
+        "email": { "type": "string", "description": "Email address" },
+        "content": { "type": "string", "description": "Order details or specific requests" },
+        "status": { "type": "string", "enum": ["pending", "confirmed", "cancelled"], "description": "Current status" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Submission time" }
+      },
+      "required": ["type", "customerName", "phone"]
+    },
+    "Review": {
+      "title": "Cinematic Review",
+      "description": "Customer feedback to be displayed in cinematic style",
+      "type": "object",
+      "properties": {
+        "author": { "type": "string", "description": "Author name" },
+        "content": { "type": "string", "description": "Review text" },
+        "isDisplayed": { "type": "boolean", "description": "Chef's control toggle for main display" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["author", "content", "isDisplayed"]
+    },
+    "PortfolioItem": {
+      "title": "Portfolio Item",
+      "description": "An event, book, or lecture in the 18-year history",
+      "type": "object",
+      "properties": {
+        "year": { "type": "number", "description": "Year of the event" },
+        "title": { "type": "string", "description": "Achievement title" },
+        "description": { "type": "string", "description": "Brief description" },
+        "image": { "type": "string", "description": "High-res image URL" },
+        "type": { "type": "string", "enum": ["book", "lecture", "media", "event"] },
+        "link": { "type": "string", "description": "External purchase or related link" }
+      },
+      "required": ["year", "title", "type"]
+    },
+    "AppConfig": {
+      "title": "App Configuration",
+      "description": "Dynamic CMS settings for GNB and branding",
+      "type": "object",
+      "properties": {
+        "gnbMenus": { "type": "array", "description": "List of GNB menu items" },
+        "socialLinks": { "type": "object", "description": "Instagram, YouTube, Blog URLs" },
+        "themeColor": { "type": "string", "description": "Hex color for accent" },
+        "mapInfo": { "type": "object", "description": "Map coordinates and parking details" }
+      }
+    }
+  },
+  "firestore": {
+    "/classes/{classId}": {
+      "schema": "Class",
+      "description": "Collection of baking classes"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Customer orders and registrations"
+    },
+    "/reviews/{reviewId}": {
+      "schema": "Review",
+      "description": "Cinematic customer reviews"
+    },
+    "/portfolio/{itemId}": {
+      "schema": "PortfolioItem",
+      "description": "Brand history timeline items"
+    },
+    "/config/main": {
+      "schema": "AppConfig",
+      "description": "Global application configuration"
+    }
+  }
+}

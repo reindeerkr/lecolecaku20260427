@@ -1,0 +1,101 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Phase 3 Primitives
+    function isSignedIn() { return request.auth != null; }
+    function isAdmin() { 
+      return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    function isValidId(id) { 
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); 
+    }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    // Validation Helpers
+    function isValidClass(data) {
+      return data.keys().hasAll(['title', 'price', 'isActive']) &&
+             data.title is string && data.title.size() <= 200 &&
+             data.price is number && data.price >= 0 &&
+             data.isActive is bool;
+    }
+
+    function isValidOrder(data) {
+      return data.keys().hasAll(['type', 'customerName', 'phone']) &&
+             data.type in ['class', 'dessert'] &&
+             data.customerName is string && data.customerName.size() <= 100 &&
+             data.phone is string && data.phone.size() <= 20;
+    }
+
+    function isValidReview(data) {
+      return data.keys().hasAll(['author', 'content', 'isDisplayed']) &&
+             data.author is string && data.author.size() <= 50 &&
+             data.content is string && data.content.size() <= 1000 &&
+             data.isDisplayed is bool;
+    }
+
+    function isValidPortfolio(data) {
+      return data.keys().hasAll(['year', 'title', 'type']) &&
+             data.year is number && data.year >= 2000 &&
+             data.title is string && data.title.size() <= 200 &&
+             data.type in ['book', 'lecture', 'media', 'event'];
+    }
+
+    // 1. Classes: Public read, Admin write
+    match /classes/{classId} {
+      allow read: if true;
+      allow create, update: if isAdmin() && isValidClass(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // 2. Orders: Public create (with rate limit check if possible, for now just create), Admin read/update
+    match /orders/{orderId} {
+      allow create: if isValidOrder(incoming());
+      allow read, update, delete: if isAdmin();
+    }
+
+    // 3. Reviews: Public read (only displayed), Public create (needs admin approval), Admin update/delete
+    match /reviews/{reviewId} {
+      allow list: if (resource.data.isDisplayed == true) || isAdmin();
+      allow get: if true;
+      allow create: if isAdmin() || (isValidReview(incoming()) && incoming().isDisplayed == false);
+      allow update, delete: if isAdmin();
+    }
+
+    // 4. Portfolio: Public read, Admin write
+    match /portfolio/{itemId} {
+      allow read: if true;
+      allow create, update: if isAdmin() && isValidPortfolio(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // 5. Config: Public read, Admin write
+    match /config/{configId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 5.1 Schedule Images: Public read, Admin write
+    match /schedule_images/{imageId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 5.2 SNS Gallery: Public read, Admin write
+    match /sns_gallery/{imageId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 6. Admins: Secret collection
+    match /admins/{userId} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow create: if isSignedIn() && request.auth.uid == userId;
+    }
+  }
+}

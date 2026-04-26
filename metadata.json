@@ -1,0 +1,11 @@
+{
+  "name": "레꼴케이쿠 (L'ecole Caku)",
+  "description": "프랑스 유학 셰프의 고품격 베이킹 스튜디오 - 클래스 예약 및 디저트 주문 플랫폼",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "Firebase",
+    "Gemini AI"
+  ]
+}

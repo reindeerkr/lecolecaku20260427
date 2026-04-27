@@ -947,6 +947,109 @@ export default function AdminDashboard({ onExit }: { onExit: () => void }) {
                       </CardContent>
                     </Card>
 
+                    {/* SEO Settings Card */}
+                    <Card className="bg-white border-neutral-100 text-neutral-900 shadow-sm overflow-hidden group hover:border-brand-accent/50 transition-colors col-span-full">
+                      <div className="h-1 bg-brand-accent opacity-10 group-hover:opacity-100 transition-opacity" />
+                      <CardHeader className="pb-4">
+                        <div className="flex items-center gap-3 mb-2">
+                          <Search className="w-4 h-4 text-brand-accent" />
+                          <CardTitle className="text-xs uppercase tracking-[0.3em] font-light text-neutral-400">SEO & Metadata</CardTitle>
+                        </div>
+                        <p className="text-[10px] text-neutral-400 font-light translate-y-[-4px]">Search engine optimization settings for better visibility.</p>
+                      </CardHeader>
+                      <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-10 border-t border-neutral-50 pt-8 mt-4">
+                        <div className="space-y-6">
+                          <div className="space-y-3">
+                            <Label className="text-[9px] uppercase tracking-widest text-neutral-400">Site Title (Browser Tab Title)</Label>
+                            <Input 
+                              value={config.seo?.title || ""}
+                              onChange={(e) => setConfig({...config, seo: {...(config.seo || {title: '', description: '', keywords: ''}), title: e.target.value}})}
+                              className="bg-neutral-50 border-neutral-100 focus:border-brand-accent h-12 text-sm"
+                              placeholder="e.g. L'ecole Caku | 프리미엄 베이킹 스튜디오"
+                            />
+                            <p className="text-[9px] text-neutral-400">사이트의 공식 명칭이며, 브라우저 탭에 표시됩니다.</p>
+                          </div>
+                          <div className="space-y-3">
+                            <Label className="text-[9px] uppercase tracking-widest text-neutral-400">Meta Description</Label>
+                            <Textarea 
+                              value={config.seo?.description || ""}
+                              onChange={(e) => setConfig({...config, seo: {...(config.seo || {title: '', description: '', keywords: ''}), description: e.target.value}})}
+                              className="bg-neutral-50 border-neutral-100 focus:border-brand-accent min-h-[100px] text-sm resize-none"
+                              placeholder="Describe your studio for search engines..."
+                            />
+                            <p className="text-[9px] text-neutral-400">검색 엔진 결과에서 사이트 이름 아래에 표시되는 설명글입니다. (권장: 150자 내외)</p>
+                          </div>
+                        </div>
+                        <div className="space-y-6">
+                          <div className="space-y-3">
+                            <Label className="text-[9px] uppercase tracking-widest text-neutral-400">Keywords (Comma Separated)</Label>
+                            <Input 
+                              value={config.seo?.keywords || ""}
+                              onChange={(e) => setConfig({...config, seo: {...(config.seo || {title: '', description: '', keywords: ''}), keywords: e.target.value}})}
+                              className="bg-neutral-50 border-neutral-100 focus:border-brand-accent h-12 text-sm"
+                              placeholder="e.g. 베이킹, 일산클래스, 디저트, 카페창업"
+                            />
+                          </div>
+                          <div className="space-y-3">
+                            <Label className="text-[9px] uppercase tracking-widest text-neutral-400">OG Image (Social Share Preview)</Label>
+                            <div className="grid grid-cols-[1fr,64px] gap-3">
+                              <div className="flex flex-col gap-2">
+                                <Input 
+                                  value={config.seo?.ogImage || ""}
+                                  onChange={(e) => setConfig({...config, seo: {...(config.seo || {title: '', description: '', keywords: ''}), ogImage: e.target.value}})}
+                                  className="bg-neutral-50 border-neutral-100 focus:border-brand-accent h-10 text-xs font-mono"
+                                  placeholder="Image URL or upload below..."
+                                />
+                                <div className="flex items-center gap-2">
+                                  <Input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={async (e) => {
+                                      const file = e.target.files?.[0];
+                                      if (file) {
+                                        const reader = new FileReader();
+                                        reader.onload = async (rv) => {
+                                          const base64 = rv.target?.result as string;
+                                          const compressed = await compressImage(base64, 1200, 1200, 0.8);
+                                          setConfig({
+                                            ...config,
+                                            seo: {
+                                              ...(config.seo || {title: '', description: '', keywords: ''}),
+                                              ogImage: compressed
+                                            }
+                                          });
+                                          toast.success("SEO 이미지가 업로드되었습니다.");
+                                        };
+                                        reader.readAsDataURL(file);
+                                      }
+                                    }}
+                                    className="hidden"
+                                    id="seo-og-upload"
+                                  />
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    className="h-8 text-[10px] w-full border-dashed border-neutral-200 hover:border-brand-accent hover:bg-brand-accent/5"
+                                    onClick={() => document.getElementById('seo-og-upload')?.click()}
+                                  >
+                                    <Upload className="w-3 h-3 mr-2" /> Upload Image
+                                  </Button>
+                                </div>
+                              </div>
+                              <div className="w-16 h-[76px] rounded border border-neutral-100 bg-neutral-50 flex items-center justify-center overflow-hidden shrink-0">
+                                {config.seo?.ogImage ? (
+                                  <img src={config.seo.ogImage} className="w-full h-full object-cover" />
+                                ) : (
+                                  <div className="text-[8px] text-neutral-300">NO IMG</div>
+                                )}
+                              </div>
+                            </div>
+                            <p className="text-[9px] text-neutral-400">카카오톡, 인스타그램 등 공유 시 나타나는 썸네일 이미지입니다. 직접 업로드하거나 URL을 입력할 수 있습니다.</p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
                     {/* Hero Section Card */}
                     <Card className="bg-white border-neutral-100 text-neutral-900 shadow-sm overflow-hidden group hover:border-brand-accent/50 transition-colors">
                       <div className="h-1 bg-brand-accent opacity-10 group-hover:opacity-100 transition-opacity" />

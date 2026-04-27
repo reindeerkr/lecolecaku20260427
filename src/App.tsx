@@ -60,6 +60,40 @@ export default function App() {
   const [isQuotaExceeded, setIsQuotaExceeded] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
 
+  // Apply SEO settings
+  useEffect(() => {
+    if (config?.seo) {
+      if (config.seo.title) {
+        document.title = config.seo.title;
+      }
+      
+      // Update Meta Tags
+      const updateMetaTag = (attribute: string, value: string, content: string) => {
+        let tag = document.head.querySelector(`meta[${attribute}="${value}"]`);
+        if (!tag) {
+          tag = document.createElement('meta');
+          tag.setAttribute(attribute, value);
+          document.head.appendChild(tag);
+        }
+        tag.setAttribute('content', content);
+      };
+
+      if (config.seo.description) {
+        updateMetaTag('name', 'description', config.seo.description);
+        updateMetaTag('property', 'og:description', config.seo.description);
+      }
+      if (config.seo.keywords) {
+        updateMetaTag('name', 'keywords', config.seo.keywords);
+      }
+      if (config.seo.ogImage) {
+        updateMetaTag('property', 'og:image', config.seo.ogImage);
+      }
+      if (config.seo.title) {
+        updateMetaTag('property', 'og:title', config.seo.title);
+      }
+    }
+  }, [config?.seo]);
+
   useEffect(() => {
     testConnection();
     

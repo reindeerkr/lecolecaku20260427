@@ -54,6 +54,13 @@ export interface RecipeVideo {
   thumbnail?: string;
 }
 
+export interface SEOConfig {
+  title: string;
+  description: string;
+  keywords: string;
+  ogImage?: string;
+}
+
 export interface AppConfig {
   hero: {
     title: string;
@@ -68,6 +75,7 @@ export interface AppConfig {
     chefName?: string;
   };
   gnbMenus: GNBMenu[];
+  seo?: SEOConfig;
   socialLinks: {
     instagram?: string;
     youtube?: string;

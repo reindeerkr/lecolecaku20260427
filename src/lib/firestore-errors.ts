@@ -38,6 +38,10 @@ export function onQuotaError(listener: QuotaErrorListener) {
   };
 }
 
+export function clearQuotaError() {
+  listeners.forEach(l => l(false));
+}
+
 function notifyQuotaExceeded() {
   listeners.forEach(l => l(true));
 }

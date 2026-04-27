@@ -27,7 +27,7 @@ export default function Hero({ config, instagramUrl }: {
         <div className="absolute inset-0 bg-black/30" />
       </motion.div>
 
-      <div className="relative z-10 text-center px-6 py-12 md:py-0">
+      <div className="relative z-10 text-center px-6 pt-32 pb-20 md:py-0">
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -40,7 +40,7 @@ export default function Hero({ config, instagramUrl }: {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 1 }}
-          className="text-white text-3xl sm:text-4xl md:text-7xl font-serif leading-[1.2] md:leading-tight mb-8 whitespace-pre-line italic drop-shadow-lg"
+          className="text-white text-3xl sm:text-4xl md:text-7xl font-serif leading-[1.3] md:leading-tight mb-10 md:mb-8 whitespace-pre-line italic drop-shadow-lg"
         >
           {title}
         </motion.h2>

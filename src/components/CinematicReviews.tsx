@@ -39,12 +39,12 @@ export default function CinematicReviews({ config }: { config?: { title: string;
         className="mb-24"
       >
         <span className="text-[10px] uppercase tracking-[0.4em] text-brand-accent mb-4 block">{subtitle}</span>
-        <h3 className="text-4xl font-serif italic text-white tracking-tight">{title}</h3>
+        <h3 className="text-4xl font-serif italic text-inherit tracking-tight">{title}</h3>
       </motion.div>
 
       <div className="space-y-32">
         {reviews.length === 0 ? (
-          <div className="py-20 opacity-40 text-white uppercase tracking-[0.4em] text-xs font-serif italic">
+          <div className="py-20 opacity-40 text-inherit uppercase tracking-[0.4em] text-xs font-serif italic">
             Reviews are being curated...
           </div>
         ) : reviews.map((review, index) => (
@@ -56,7 +56,7 @@ export default function CinematicReviews({ config }: { config?: { title: string;
             transition={{ duration: 1.2, ease: "easeOut" }}
             className="group"
           >
-            <p className="text-xl md:text-3xl font-serif leading-relaxed mb-10 text-white max-w-2xl mx-auto">
+            <p className="text-xl md:text-3xl font-serif leading-relaxed mb-10 text-inherit max-w-2xl mx-auto">
               “{review.content}”
             </p>
             <div className="flex items-center justify-center gap-4 opacity-50 group-hover:opacity-100 transition-all duration-500">

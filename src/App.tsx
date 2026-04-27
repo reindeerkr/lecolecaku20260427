@@ -46,8 +46,8 @@ import { auth, db } from '@/lib/firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { AppConfig } from './types';
-import { handleFirestoreError, OperationType, onQuotaError } from '@/lib/firestore-errors';
-import { AlertCircle } from 'lucide-react';
+import { handleFirestoreError, OperationType, onQuotaError, clearQuotaError } from '@/lib/firestore-errors';
+import { AlertCircle, RefreshCcw } from 'lucide-react';
 
 export default function App() {
   const [isAdminMode, setIsAdminMode] = useState(false);
@@ -158,11 +158,25 @@ export default function App() {
       {/* GNB - Sticky Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-[#111111]/80 backdrop-blur-xl border-b border-white/5">
         {isQuotaExceeded && (
-          <div className="bg-red-500/10 border-b border-red-500/20 py-2 px-10 flex items-center justify-center gap-3">
-            <AlertCircle className="w-4 h-4 text-red-500" />
-            <p className="text-[10px] text-red-500 uppercase tracking-widest font-medium">
-              Firestore Quota Exceeded. Service will resume at 4PM KST. Local data may still be visible.
-            </p>
+          <div className="bg-red-500/10 border-b border-red-500/20 py-2 px-6 md:px-10 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
+              <p className="text-[9px] md:text-[10px] text-red-500 uppercase tracking-widest font-medium leading-relaxed">
+                Firestore Quota Exceeded. If you just upgraded to Blaze, please wait 5-10 mins or click retry.
+              </p>
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => {
+                clearQuotaError();
+                window.location.reload();
+              }}
+              className="h-7 px-3 text-[9px] uppercase tracking-widest border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors shrink-0"
+            >
+              <RefreshCcw className="w-3 h-3 mr-2" />
+              Retry
+            </Button>
           </div>
         )}
         <nav className="max-w-7xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between">

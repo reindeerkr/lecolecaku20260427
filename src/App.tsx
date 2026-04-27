@@ -42,6 +42,8 @@ import SNSFeeds from './components/SNSFeeds';
 import AdminDashboard from './components/AdminDashboard';
 import LoginModal from './components/LoginModal';
 
+import LoadingScreen from './components/LoadingScreen';
+
 import { auth, db } from '@/lib/firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, onSnapshot } from 'firebase/firestore';
@@ -56,6 +58,7 @@ export default function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [config, setConfig] = useState<AppConfig | null>(null);
   const [isQuotaExceeded, setIsQuotaExceeded] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   useEffect(() => {
     testConnection();
@@ -63,6 +66,8 @@ export default function App() {
     // Listen for quota errors anywhere in the app
     const unsubscribeQuota = onQuotaError((isExceeded) => {
       setIsQuotaExceeded(isExceeded);
+      // If quota exceeded, we might never get the config, so we should allow showing what we have (or error)
+      if (isExceeded) setIsInitialLoading(false);
     });
 
     const unsubscribeAuth = onAuthStateChanged(auth, (u) => {
@@ -101,8 +106,11 @@ export default function App() {
           hero: data.hero || data
         }));
       }
+      // Give a small delay to ensure other snapshots that started at the same time have a chance to arrive
+      setTimeout(() => setIsInitialLoading(false), 200);
     }, (error) => {
       handleFirestoreError(error, OperationType.GET, 'config/hero');
+      setIsInitialLoading(false);
     });
 
     const unsubscribeAbout = onSnapshot(doc(db, 'config', 'about'), (snap) => {
@@ -143,6 +151,10 @@ export default function App() {
     { name: 'RECIPE', id: 'recipes' },
     { name: 'CONTACT', id: 'contact' },
   ];
+
+  if (isInitialLoading) {
+    return <LoadingScreen />;
+  }
 
   if (isAdminMode && user) {
     return (

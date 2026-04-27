@@ -69,9 +69,8 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
   // If it's a quota error, notify listeners and show a helpful message
   if (errInfo.error.includes('Quota exceeded') || errInfo.error.includes('resource-exhausted')) {
     notifyQuotaExceeded();
-    const quotaMsg = "할당량 초과(Quota Exceeded): Firestore 무료 티어 한도에 도달했습니다. 한국 시간 기준 오후 4~5시경 초기화됩니다. " + errorString;
-    // Don't throw for background listeners to avoid breaking the whole app logic if we want to show a graceful UI
-    // But we still want to log it
+    const quotaMsg = "할당량 초과(Quota Exceeded): Firestore 무료 티어 한도에 도달했습니다. 만약 Blaze(유료) 플랜으로 금방 전환하셨다면, 시스템 반영에 10~15분 정도 소요될 수 있으니 잠시 후 다시 시도해주세요. " + errorString;
+    console.warn(quotaMsg);
     return; 
   }
   

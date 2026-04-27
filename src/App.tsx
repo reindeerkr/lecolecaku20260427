@@ -46,7 +46,7 @@ import LoadingScreen from './components/LoadingScreen';
 
 import { auth, db } from '@/lib/firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot, collection } from 'firebase/firestore';
 import { AppConfig } from './types';
 import { handleFirestoreError, OperationType, onQuotaError, clearQuotaError } from '@/lib/firestore-errors';
 import { AlertCircle, RefreshCcw } from 'lucide-react';
@@ -74,21 +74,40 @@ export default function App() {
       setUser(u);
     });
 
-    // Track loading status of core components
+    // Track loading status of core components and initial data
     const loaded = {
       main: false,
       hero: false,
       about: false,
-      media: false
+      media: false,
+      classes: false,
+      schedule: false
     };
 
     const tryFinishLoading = () => {
-      if (loaded.main && loaded.hero && loaded.about && loaded.media) {
+      if (loaded.main && loaded.hero && loaded.about && loaded.media && loaded.classes && loaded.schedule) {
         // Give a clear buffer to ensure DOM is ready and prevent any flashing
-        // Increased to 600ms for extra stability
-        setTimeout(() => setIsInitialLoading(false), 600);
+        // Increased to 800ms for a more polished transition
+        setTimeout(() => setIsInitialLoading(false), 800);
       }
     };
+
+    // Global listener for classes count to know when it's "ready"
+    const unsubscribeClassesReady = onSnapshot(collection(db, 'classes'), () => {
+      loaded.classes = true;
+      tryFinishLoading();
+    }, () => {
+      loaded.classes = true; // Still finish loading even on error
+      tryFinishLoading();
+    });
+
+    const unsubscribeScheduleReady = onSnapshot(collection(db, 'schedule_images'), () => {
+      loaded.schedule = true;
+      tryFinishLoading();
+    }, () => {
+      loaded.schedule = true;
+      tryFinishLoading();
+    });
 
     const unsubscribeConfig = onSnapshot(doc(db, 'config', 'main'), (snap) => {
       if (snap.exists()) {
@@ -161,6 +180,8 @@ export default function App() {
       unsubscribeMedia();
       unsubscribeHero();
       unsubscribeAbout();
+      unsubscribeClassesReady();
+      unsubscribeScheduleReady();
     };
   }, []);
 
@@ -176,10 +197,26 @@ export default function App() {
     { name: 'ABOUT', id: 'about' },
     { name: 'SCHEDULE', id: 'schedule' },
     { name: 'CLASSES', id: 'classes' },
+    { name: 'REVIEWS', id: 'reviews' },
     { name: 'ARCHIVE', id: 'archive' },
     { name: 'RECIPE', id: 'recipes' },
     { name: 'CONTACT', id: 'contact' },
   ];
+
+  const activeMenus = (config?.gnbMenus && config.gnbMenus.length > 0 ? config.gnbMenus : navItems)
+    .filter(item => {
+      // For items from config.gnbMenus
+      if ('isActive' in item) return item.isActive !== false;
+      // For items from default navItems (which don't have isActive yet)
+      return true;
+    });
+
+  const isSectionActive = (path: string) => {
+    // If no custom config yet, all defaults are active
+    if (!config?.gnbMenus || config.gnbMenus.length === 0) return true;
+    // Check if there is an active menu with this path
+    return config.gnbMenus.some(m => m.path === path && m.isActive !== false);
+  };
 
   if (isInitialLoading) {
     return <LoadingScreen />;
@@ -222,8 +259,8 @@ export default function App() {
           </div>
         )}
         <nav className="max-w-7xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full border border-brand-accent flex items-center justify-center opacity-60 overflow-hidden shrink-0">
+          <a href="#" className="flex items-center gap-3 hover:opacity-70 transition-opacity group">
+            <div className="w-8 h-8 rounded-full border border-brand-accent flex items-center justify-center opacity-60 group-hover:opacity-100 overflow-hidden shrink-0 transition-opacity">
               {config?.logo?.imageUrl ? (
                 <img src={config.logo.imageUrl} className="w-full h-full object-contain" referrerPolicy="no-referrer" />
               ) : (
@@ -235,11 +272,11 @@ export default function App() {
             <h1 className="text-xl font-serif tracking-[0.2em] font-light uppercase italic">
               {config?.logo?.text || "L'ecole Caku"}
             </h1>
-          </div>
+          </a>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-12">
-            {(config?.gnbMenus && config.gnbMenus.length > 0 ? config.gnbMenus : navItems).map((item, idx) => (
+            {activeMenus.map((item, idx) => (
               <a 
                 key={idx} 
                 href={'path' in item ? item.path : `#${item.id}`}
@@ -277,7 +314,7 @@ export default function App() {
             exit={{ opacity: 0, y: -20 }}
             className="fixed inset-0 z-40 bg-brand-warm flex flex-col items-center justify-center gap-8 md:hidden"
           >
-            {(config?.gnbMenus && config.gnbMenus.length > 0 ? config.gnbMenus : navItems).map((item, idx) => (
+            {activeMenus.map((item, idx) => (
               <a 
                 key={idx} 
                 href={'path' in item ? item.path : `#${item.id}`}
@@ -300,27 +337,49 @@ export default function App() {
 
       <main>
         <Hero config={config?.hero} instagramUrl={config?.socialLinks?.instagram} />
-        <section id="about" className="py-24">
-          <About config={config?.about} />
-        </section>
-        <section id="schedule" className="py-16 md:py-24 bg-neutral-50">
-          <ScheduleGallery config={config?.schedule} />
-        </section>
-        <section id="classes" className="py-16 md:py-24">
-          <ClassList config={config?.classList} />
-        </section>
-        <div className="py-16 md:py-24 bg-brand-warm text-brand-ink">
-          <CinematicReviews config={config?.reviews} />
-        </div>
-        <section id="archive" className="py-16 md:py-24">
-          <BrandTimeline config={config?.history} />
-        </section>
-        <section id="recipes" className="py-16 md:py-24 bg-white/40">
-          <FreeRecipeMedia config={config?.freeRecipeMedia} />
-        </section>
-        <section id="contact" className="py-16 md:py-24">
-          <ContactMap config={config?.mapInfo} />
-        </section>
+        
+        {isSectionActive('#about') && (
+          <section id="about" className="py-24">
+            <About config={config?.about} />
+          </section>
+        )}
+
+        {isSectionActive('#schedule') && (
+          <section id="schedule" className="py-16 md:py-24 bg-neutral-50">
+            <ScheduleGallery config={config?.schedule} />
+          </section>
+        )}
+
+        {isSectionActive('#classes') && (
+          <section id="classes" className="py-16 md:py-24">
+            <ClassList config={config?.classList} />
+          </section>
+        )}
+
+        {isSectionActive('#reviews') && (
+          <section id="reviews" className="py-16 md:py-24 bg-brand-warm text-brand-ink">
+            <CinematicReviews config={config?.reviews} />
+          </section>
+        )}
+
+        {isSectionActive('#archive') && (
+          <section id="archive" className="py-16 md:py-24">
+            <BrandTimeline config={config?.history} />
+          </section>
+        )}
+
+        {isSectionActive('#recipes') && (
+          <section id="recipes" className="py-16 md:py-24 bg-white/40">
+            <FreeRecipeMedia config={config?.freeRecipeMedia} />
+          </section>
+        )}
+
+        {isSectionActive('#contact') && (
+          <section id="contact" className="py-16 md:py-24">
+            <ContactMap config={config?.mapInfo} />
+          </section>
+        )}
+
         <div className="py-16 md:py-24 border-t border-brand-accent/10">
           <SNSFeeds config={config?.instagramFeed} />
         </div>

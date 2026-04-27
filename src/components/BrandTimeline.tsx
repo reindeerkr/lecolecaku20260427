@@ -67,7 +67,7 @@ export default function BrandTimeline({ config }: BrandTimelineProps) {
       <div className="relative">
         <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-[1px] bg-brand-accent/20 hidden md:block" />
 
-        <div className="space-y-24">
+        <div className="space-y-12 md:space-y-24">
           {items.map((event, index) => {
             const Icon = ICON_MAP[event.icon] || Globe;
             const isLeft = event.side === 'left';
@@ -79,39 +79,34 @@ export default function BrandTimeline({ config }: BrandTimelineProps) {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
-                className={`flex flex-col md:flex-row items-center gap-8`}
+                className="flex flex-col md:flex-row items-center md:gap-0 gap-6"
               >
-                <div className="flex-1 text-center md:text-right">
-                  {isLeft && (
-                    <div className="md:pr-12">
-                      <span className="text-3xl font-serif text-brand-accent mb-2 block">{event.year}</span>
-                      <h4 className="text-xl font-medium mb-3">{event.title}</h4>
-                      <p className="text-neutral-500 text-sm leading-relaxed">{event.description}</p>
-                      {event.link && (
-                        <a href={event.link.url} target="_blank" rel="noopener noreferrer" className="text-xs border-b border-brand-accent/30 mt-4 inline-block hover:text-brand-accent transition-colors">
-                          {event.link.text}
-                        </a>
-                      )}
-                    </div>
+                {/* Desktop Left Side */}
+                <div className={`hidden md:block flex-1 pr-12 text-right ${!isLeft ? 'invisible' : ''}`}>
+                  <span className="text-3xl font-serif text-brand-accent mb-2 block">{event.year}</span>
+                  <h4 className="text-xl font-medium mb-3">{event.title}</h4>
+                  <p className="text-neutral-500 text-sm leading-relaxed">{event.description}</p>
+                  {event.link && (
+                    <a href={event.link.url} target="_blank" rel="noopener noreferrer" className="text-xs border-b border-brand-accent/30 mt-4 inline-block hover:text-brand-accent transition-colors">
+                      {event.link.text}
+                    </a>
                   )}
                 </div>
 
-                <div className="w-12 h-12 bg-[#111111] border border-brand-accent/30 rounded-full flex items-center justify-center z-10 shadow-[0_0_20px_rgba(196,164,132,0.1)]">
+                {/* Central Icon */}
+                <div className="shrink-0 w-12 h-12 bg-[#111111] border border-brand-accent/30 rounded-full flex items-center justify-center z-10 shadow-[0_0_20px_rgba(196,164,132,0.1)]">
                   <Icon className="w-5 h-5 text-brand-accent" />
                 </div>
 
-                <div className="flex-1 text-center md:text-left">
-                  {!isLeft && (
-                    <div className="md:pl-12">
-                      <span className="text-3xl font-serif text-brand-accent mb-2 block">{event.year}</span>
-                      <h4 className="text-xl font-medium mb-3">{event.title}</h4>
-                      <p className="text-neutral-500 text-sm leading-relaxed">{event.description}</p>
-                      {event.link && (
-                        <a href={event.link.url} target="_blank" rel="noopener noreferrer" className="text-xs border-b border-brand-accent/30 mt-4 inline-block hover:text-brand-accent transition-colors">
-                          {event.link.text}
-                        </a>
-                      )}
-                    </div>
+                {/* Desktop Right Side / Mobile Content */}
+                <div className={`flex-1 w-full md:pl-12 text-center md:text-left ${isLeft ? 'md:invisible' : ''}`}>
+                  <span className="text-3xl font-serif text-brand-accent mb-1 md:mb-2 block">{event.year}</span>
+                  <h4 className="text-lg md:text-xl font-medium mb-2 md:mb-3">{event.title}</h4>
+                  <p className="text-neutral-500 text-sm leading-relaxed px-6 md:px-0">{event.description}</p>
+                  {event.link && (
+                    <a href={event.link.url} target="_blank" rel="noopener noreferrer" className="text-xs border-b border-brand-accent/30 mt-3 md:mt-4 inline-block hover:text-brand-accent transition-colors">
+                      {event.link.text}
+                    </a>
                   )}
                 </div>
               </motion.div>

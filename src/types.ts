@@ -43,6 +43,7 @@ export interface GNBMenu {
   title: string;
   path: string;
   isExternal?: boolean;
+  isActive?: boolean;
 }
 
 export interface RecipeVideo {

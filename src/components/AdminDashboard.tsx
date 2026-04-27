@@ -727,6 +727,226 @@ export default function AdminDashboard({ onExit }: { onExit: () => void }) {
                   </div>
 
                   <div className="grid grid-cols-1 xl:grid-cols-2 gap-10 items-start">
+                    {/* Navigation & Branding Card - Prominent at the top */}
+                    <Card className="bg-white border-neutral-100 text-neutral-900 shadow-sm overflow-hidden group hover:border-brand-accent/50 transition-colors col-span-full mb-4">
+                      <div className="h-1 bg-brand-accent opacity-10 group-hover:opacity-100 transition-opacity" />
+                      <CardHeader className="pb-4">
+                        <div className="flex items-center gap-3 mb-2">
+                          <Globe className="w-4 h-4 text-brand-accent" />
+                          <CardTitle className="text-xs uppercase tracking-[0.3em] font-light text-neutral-400">Navigation & Branding</CardTitle>
+                        </div>
+                        <p className="text-[10px] text-neutral-400 font-light translate-y-[-4px]">Main navigation menu labels, paths, and logo settings.</p>
+                      </CardHeader>
+                      <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-10 border-t border-neutral-50 pt-8 mt-4">
+                        <div className="space-y-6">
+                          <div className="space-y-3">
+                            <Label className="text-[9px] uppercase tracking-widest text-neutral-400">Main Logo Text (Website Title)</Label>
+                            <Input 
+                              value={config.logo?.text || ""}
+                              onChange={(e) => setConfig({...config, logo: {...(config.logo || {text: '', circleText: ''}), text: e.target.value}})}
+                              className="bg-neutral-50 border-neutral-100 focus:border-brand-accent h-12 text-sm font-medium"
+                              placeholder="e.g. L'ecole Caku"
+                            />
+                          </div>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="space-y-3">
+                              <Label className="text-[9px] uppercase tracking-widest text-neutral-400">Logo Icon Text</Label>
+                              <Input 
+                                value={config.logo?.circleText || ""}
+                                onChange={(e) => setConfig({...config, logo: {...(config.logo || {text: '', circleText: ''}), circleText: e.target.value}})}
+                                className="bg-neutral-50 border-neutral-100 focus:border-brand-accent h-12 text-sm uppercase"
+                                placeholder="e.g. LC"
+                                maxLength={3}
+                              />
+                            </div>
+                            <div className="space-y-3">
+                              <Label className="text-[9px] uppercase tracking-widest text-neutral-400">Icon Preview</Label>
+                              <div className="w-12 h-12 rounded-full bg-brand-ink text-white flex items-center justify-center text-[10px] font-bold">
+                                {config.logo?.circleText || "LC"}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="space-y-3">
+                            <Label className="text-[9px] uppercase tracking-widest text-neutral-400">Logo Icon Image (Replaces Text)</Label>
+                            <div className="grid grid-cols-[1fr,48px] gap-3">
+                              <div className="flex flex-col gap-2">
+                                <Input 
+                                  value={config.logo?.imageUrl || ""}
+                                  onChange={(e) => setConfig({...config, logo: {...(config.logo || {text: '', circleText: ''}), imageUrl: e.target.value}})}
+                                  className="bg-neutral-50 border-neutral-100 focus:border-brand-accent h-12 text-xs font-mono"
+                                  placeholder="Paste image URL..."
+                                />
+                                <div className="flex gap-2">
+                                  <input 
+                                    type="file" 
+                                    id="logo-upload" 
+                                    className="hidden" 
+                                    accept="image/*"
+                                    onChange={handleLogoUpload}
+                                  />
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    className="text-[10px] uppercase tracking-widest h-8"
+                                    onClick={() => document.getElementById('logo-upload')?.click()}
+                                  >
+                                    <Upload className="w-3 h-3 mr-2" /> Upload Icon
+                                  </Button>
+                                </div>
+                              </div>
+                              <div className="w-12 h-12 rounded border border-neutral-100 bg-neutral-50 flex items-center justify-center overflow-hidden shrink-0">
+                                {config.logo?.imageUrl ? (
+                                  <img src={config.logo.imageUrl} className="w-full h-full object-contain" />
+                                ) : (
+                                  <div className="text-[10px] text-neutral-300 uppercase">OFF</div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="space-y-6">
+                          <div className="flex justify-between items-center">
+                            <Label className="text-[9px] uppercase tracking-widest text-brand-accent font-semibold underline underline-offset-4 decoration-brand-accent/30">GNB Navigation Menus</Label>
+                            <div className="flex gap-2">
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                onClick={() => {
+                                  const defaults = [
+                                    { title: 'ABOUT', path: '#about', isActive: true },
+                                    { title: 'SCHEDULE', path: '#schedule', isActive: true },
+                                    { title: 'CLASSES', path: '#classes', isActive: true },
+                                    { title: 'REVIEWS', path: '#reviews', isActive: true },
+                                    { title: 'ARCHIVE', path: '#archive', isActive: true },
+                                    { title: 'RECIPE', path: '#recipes', isActive: true },
+                                    { title: 'CONTACT', path: '#contact', isActive: true },
+                                  ];
+                                  setConfig({...config, gnbMenus: defaults});
+                                  toast.info("기본 메뉴로 초기화되었습니다.");
+                                }}
+                                className="text-[9px] uppercase tracking-widest text-neutral-400 h-6 hover:text-brand-accent"
+                              >
+                                <RefreshCw className="w-3 h-3 mr-1" /> Reset Defaults
+                              </Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                onClick={() => setConfig({...config, gnbMenus: [...(config.gnbMenus || []), {title: 'NEW MENU', path: '#', isActive: true}]})}
+                                className="text-[9px] uppercase tracking-widest text-brand-accent h-6 font-bold"
+                              >
+                                <Plus className="w-3 h-3 mr-1" /> Add Item
+                              </Button>
+                            </div>
+                          </div>
+                          <div className="space-y-2 max-h-[360px] overflow-y-auto pr-2 scrollbar-hide border-y border-neutral-50 py-4">
+                            {(config.gnbMenus && config.gnbMenus.length > 0) ? (config.gnbMenus || []).map((menu, idx) => (
+                              <div key={idx} className="flex gap-2 items-center bg-neutral-50 p-2 rounded-sm border border-neutral-100 group/nav">
+                                <div className="flex flex-col gap-0.5 opacity-0 group-hover/nav:opacity-100 transition-opacity">
+                                  <button 
+                                    disabled={idx === 0}
+                                    onClick={() => {
+                                      const newMenus = [...config.gnbMenus];
+                                      [newMenus[idx - 1], newMenus[idx]] = [newMenus[idx], newMenus[idx - 1]];
+                                      setConfig({...config, gnbMenus: newMenus});
+                                    }}
+                                    className="text-neutral-400 hover:text-brand-accent disabled:opacity-20"
+                                  >
+                                    <ChevronUp className="w-3 h-3" />
+                                  </button>
+                                  <button 
+                                    disabled={idx === config.gnbMenus.length - 1}
+                                    onClick={() => {
+                                      const newMenus = [...config.gnbMenus];
+                                      [newMenus[idx + 1], newMenus[idx]] = [newMenus[idx], newMenus[idx + 1]];
+                                      setConfig({...config, gnbMenus: newMenus});
+                                    }}
+                                    className="text-neutral-400 hover:text-brand-accent disabled:opacity-20"
+                                  >
+                                    <ChevronDown className="w-3 h-3" />
+                                  </button>
+                                </div>
+                                <div className="flex-1 grid grid-cols-[100px,1fr,40px] gap-2 items-center">
+                                  <Input 
+                                    value={menu.title}
+                                    onChange={(e) => {
+                                      const newMenus = [...config.gnbMenus];
+                                      newMenus[idx].title = e.target.value;
+                                      setConfig({...config, gnbMenus: newMenus});
+                                    }}
+                                    className="bg-white border-neutral-200 h-9 text-xs font-bold uppercase"
+                                    placeholder="Menu Label"
+                                  />
+                                  <Input 
+                                    value={menu.path}
+                                    onChange={(e) => {
+                                      const newMenus = [...config.gnbMenus];
+                                      newMenus[idx].path = e.target.value;
+                                      setConfig({...config, gnbMenus: newMenus});
+                                    }}
+                                    className="bg-white border-neutral-200 h-9 text-xs font-mono"
+                                    placeholder="Path (#about)"
+                                  />
+                                  <div className="flex flex-col items-center gap-1">
+                                    <Switch 
+                                      checked={menu.isActive !== false} 
+                                      onCheckedChange={(val) => {
+                                        const newMenus = [...config.gnbMenus];
+                                        newMenus[idx].isActive = val;
+                                        setConfig({...config, gnbMenus: newMenus});
+                                      }}
+                                      className="scale-75"
+                                    />
+                                    <span className="text-[6px] uppercase tracking-[0.2em] font-bold text-neutral-400 leading-none">
+                                      {menu.isActive !== false ? 'ON' : 'OFF'}
+                                    </span>
+                                  </div>
+                                </div>
+                                <Button 
+                                  variant="ghost" 
+                                  size="icon" 
+                                  onClick={() => {
+                                    const newMenus = config.gnbMenus.filter((_m, i) => i !== idx);
+                                    setConfig({...config, gnbMenus: newMenus});
+                                  }}
+                                  className="h-8 w-8 text-neutral-300 hover:text-red-400"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </Button>
+                              </div>
+                            )) : (
+                              <div className="py-12 border border-dashed border-neutral-200 rounded-sm text-center bg-neutral-50/50">
+                                <Globe className="w-6 h-6 text-neutral-200 mx-auto mb-3" />
+                                <p className="text-[10px] uppercase tracking-widest text-neutral-400 mb-3">No Custom Navigation</p>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  onClick={() => {
+                                    const defaults = [
+                                      { title: 'ABOUT', path: '#about', isActive: true },
+                                      { title: 'SCHEDULE', path: '#schedule', isActive: true },
+                                      { title: 'CLASSES', path: '#classes', isActive: true },
+                                      { title: 'REVIEWS', path: '#reviews', isActive: true },
+                                      { title: 'ARCHIVE', path: '#archive', isActive: true },
+                                      { title: 'RECIPE', path: '#recipes', isActive: true },
+                                      { title: 'CONTACT', path: '#contact', isActive: true },
+                                    ];
+                                    setConfig({...config, gnbMenus: defaults});
+                                  }}
+                                  className="h-8 text-[9px] uppercase tracking-widest"
+                                >
+                                  Load Default Menu
+                                </Button>
+                              </div>
+                            )}
+                          </div>
+                          <p className="text-[10px] text-neutral-400 font-light flex items-center gap-2">
+                             <span className="w-1.5 h-1.5 rounded-full bg-brand-accent animate-pulse" />
+                             상단 메뉴 라벨을 수정하면 즉시 메인 페이지 메뉴명이 바뀝니다.
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
+
                     {/* Hero Section Card */}
                     <Card className="bg-white border-neutral-100 text-neutral-900 shadow-sm overflow-hidden group hover:border-brand-accent/50 transition-colors">
                       <div className="h-1 bg-brand-accent opacity-10 group-hover:opacity-100 transition-opacity" />
@@ -1098,138 +1318,6 @@ export default function AdminDashboard({ onExit }: { onExit: () => void }) {
                       </CardContent>
                     </Card>
 
-                    {/* Navigation & Branding Card */}
-                    <Card className="bg-white border-neutral-100 text-neutral-900 shadow-sm md:col-span-2 overflow-hidden group hover:border-brand-accent/50 transition-colors">
-                      <div className="h-1 bg-brand-accent opacity-10 group-hover:opacity-100 transition-opacity" />
-                      <CardHeader className="pb-4">
-                        <div className="flex items-center gap-3 mb-2">
-                          <Globe className="w-4 h-4 text-brand-accent" />
-                          <CardTitle className="text-xs uppercase tracking-[0.3em] font-light text-neutral-400">Navigation & Branding</CardTitle>
-                        </div>
-                        <p className="text-[10px] text-neutral-400 font-light translate-y-[-4px]">Logo identity and global menu configuration.</p>
-                      </CardHeader>
-                      <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                        <div className="space-y-6">
-                          <div className="space-y-3">
-                            <Label className="text-[9px] uppercase tracking-widest text-neutral-400">Main Logo Text</Label>
-                            <Input 
-                              value={config.logo?.text || ""}
-                              onChange={(e) => setConfig({...config, logo: {...(config.logo || {text: '', circleText: ''}), text: e.target.value}})}
-                              className="bg-neutral-50 border-neutral-100 focus:border-brand-accent h-12 text-sm"
-                              placeholder="e.g. L'ecole Caku"
-                            />
-                          </div>
-                          <div className="space-y-3">
-                            <Label className="text-[9px] uppercase tracking-widest text-neutral-400">Logo Icon Text (Circle)</Label>
-                            <Input 
-                              value={config.logo?.circleText || ""}
-                              onChange={(e) => setConfig({...config, logo: {...(config.logo || {text: '', circleText: ''}), circleText: e.target.value}})}
-                              className="bg-neutral-50 border-neutral-100 focus:border-brand-accent h-12 text-sm uppercase"
-                              placeholder="e.g. LC"
-                              maxLength={3}
-                            />
-                          </div>
-                          <div className="space-y-3">
-                            <Label className="text-[9px] uppercase tracking-widest text-neutral-400">Logo Icon Image (Upload or URL)</Label>
-                            <div className="grid grid-cols-[1fr,48px] gap-3">
-                              <div className="flex flex-col gap-2">
-                                <Input 
-                                  value={config.logo?.imageUrl || ""}
-                                  onChange={(e) => setConfig({...config, logo: {...(config.logo || {text: '', circleText: ''}), imageUrl: e.target.value}})}
-                                  className="bg-neutral-50 border-neutral-100 focus:border-brand-accent h-12 text-sm"
-                                  placeholder="Paste image URL or use upload..."
-                                />
-                                <div className="flex gap-2">
-                                  <input 
-                                    type="file" 
-                                    id="logo-upload" 
-                                    className="hidden" 
-                                    accept="image/*"
-                                    onChange={handleLogoUpload}
-                                  />
-                                  <Button 
-                                    variant="outline" 
-                                    size="sm" 
-                                    className="text-[10px] uppercase tracking-widest h-8"
-                                    onClick={() => document.getElementById('logo-upload')?.click()}
-                                  >
-                                    <Upload className="w-3 h-3 mr-2" /> Upload Icon
-                                  </Button>
-                                  {config.logo?.imageUrl && (
-                                    <Button 
-                                      variant="ghost" 
-                                      size="sm" 
-                                      className="text-[10px] uppercase tracking-widest h-8 text-neutral-400"
-                                      onClick={() => setConfig({...config, logo: {...(config.logo || {text: '', circleText: ''}), imageUrl: ''}})}
-                                    >
-                                      Clear
-                                    </Button>
-                                  )}
-                                </div>
-                              </div>
-                              <div className="w-12 h-12 rounded border border-neutral-100 bg-neutral-50 flex items-center justify-center overflow-hidden shrink-0">
-                                {config.logo?.imageUrl ? (
-                                  <img src={config.logo.imageUrl} className="w-full h-full object-contain" />
-                                ) : (
-                                  <div className="text-[10px] text-neutral-300 uppercase">OFF</div>
-                                )}
-                              </div>
-                            </div>
-                            <p className="text-[10px] text-neutral-400 font-light italic">If provided, this image will replace the circle text icon.</p>
-                          </div>
-                        </div>
-                        <div className="space-y-6">
-                          <div className="flex justify-between items-center">
-                            <Label className="text-[9px] uppercase tracking-widest text-neutral-400">GNB Menus</Label>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              onClick={() => setConfig({...config, gnbMenus: [...(config.gnbMenus || []), {title: 'New Menu', path: '#'}]})}
-                              className="text-[9px] uppercase tracking-widest text-brand-accent h-6"
-                            >
-                              <Plus className="w-3 h-3 mr-1" /> Add Menu
-                            </Button>
-                          </div>
-                          <div className="space-y-3">
-                            {(config.gnbMenus || []).map((menu, idx) => (
-                              <div key={idx} className="flex gap-2 items-center">
-                                <Input 
-                                  value={menu.title}
-                                  onChange={(e) => {
-                                    const newMenus = [...config.gnbMenus];
-                                    newMenus[idx].title = e.target.value;
-                                    setConfig({...config, gnbMenus: newMenus});
-                                  }}
-                                  className="bg-neutral-50 border-neutral-100 h-10 text-xs w-1/3"
-                                  placeholder="Title"
-                                />
-                                <Input 
-                                  value={menu.path}
-                                  onChange={(e) => {
-                                    const newMenus = [...config.gnbMenus];
-                                    newMenus[idx].path = e.target.value;
-                                    setConfig({...config, gnbMenus: newMenus});
-                                  }}
-                                  className="bg-neutral-50 border-neutral-100 h-10 text-xs flex-1"
-                                  placeholder="Path (e.g. #about)"
-                                />
-                                <Button 
-                                  variant="ghost" 
-                                  size="icon" 
-                                  onClick={() => {
-                                    const newMenus = config.gnbMenus.filter((_m, i) => i !== idx);
-                                    setConfig({...config, gnbMenus: newMenus});
-                                  }}
-                                  className="h-10 w-10 text-neutral-300 hover:text-red-400"
-                                >
-                                  <X className="w-4 h-4" />
-                                </Button>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
 
                     {/* Footer & Social Section Card */}
                     <Card className="bg-white border-neutral-100 text-neutral-900 shadow-sm md:col-span-2 overflow-hidden group hover:border-brand-accent/50 transition-colors">

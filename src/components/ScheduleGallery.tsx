@@ -72,8 +72,8 @@ export default function ScheduleGallery({ config: propConfig }: { config?: { tit
         </CarouselContent>
         {images.length > 1 && (
           <>
-            <CarouselPrevious className="hidden md:flex bg-white/10 border-white/20 text-white hover:bg-white/20" />
-            <CarouselNext className="hidden md:flex bg-white/10 border-white/20 text-white hover:bg-white/20" />
+            <CarouselPrevious className="flex -left-4 md:-left-16 bg-brand-accent text-brand-warm border-none hover:bg-white hover:scale-110 transition-all shadow-2xl h-12 w-12 md:h-16 md:w-16" />
+            <CarouselNext className="flex -right-4 md:-right-16 bg-brand-accent text-brand-warm border-none hover:bg-white hover:scale-110 transition-all shadow-2xl h-12 w-12 md:h-16 md:w-16" />
           </>
         )}
       </Carousel>

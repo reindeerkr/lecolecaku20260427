@@ -95,7 +95,12 @@ service cloud.firestore {
     // 6. Admins: Secret collection
     match /admins/{userId} {
       allow read: if isSignedIn() && request.auth.uid == userId;
-      allow create: if isSignedIn() && request.auth.uid == userId;
+      // create is removed to prevent self-promotion
+    }
+
+    // 7. Connection Test
+    match /test/connection {
+      allow read: if true;
     }
   }
 }

@@ -74,6 +74,22 @@ export default function App() {
       setUser(u);
     });
 
+    // Track loading status of core components
+    const loaded = {
+      main: false,
+      hero: false,
+      about: false,
+      media: false
+    };
+
+    const tryFinishLoading = () => {
+      if (loaded.main && loaded.hero && loaded.about && loaded.media) {
+        // Give a clear buffer to ensure DOM is ready and prevent any flashing
+        // Increased to 600ms for extra stability
+        setTimeout(() => setIsInitialLoading(false), 600);
+      }
+    };
+
     const unsubscribeConfig = onSnapshot(doc(db, 'config', 'main'), (snap) => {
       if (snap.exists()) {
         const mainData = snap.data() as AppConfig;
@@ -82,8 +98,12 @@ export default function App() {
           freeRecipeMedia: prev?.freeRecipeMedia || mainData.freeRecipeMedia
         }));
       }
+      loaded.main = true;
+      tryFinishLoading();
     }, (error) => {
       handleFirestoreError(error, OperationType.GET, 'config/main');
+      loaded.main = true;
+      tryFinishLoading();
     });
 
     const unsubscribeMedia = onSnapshot(doc(db, 'config', 'media'), (snap) => {
@@ -94,8 +114,12 @@ export default function App() {
           freeRecipeMedia: mediaData.freeRecipeMedia
         }));
       }
+      loaded.media = true;
+      tryFinishLoading();
     }, (error) => {
       handleFirestoreError(error, OperationType.GET, 'config/media');
+      loaded.media = true;
+      tryFinishLoading();
     });
 
     const unsubscribeHero = onSnapshot(doc(db, 'config', 'hero'), (snap) => {
@@ -106,11 +130,12 @@ export default function App() {
           hero: data.hero || data
         }));
       }
-      // Give a small delay to ensure other snapshots that started at the same time have a chance to arrive
-      setTimeout(() => setIsInitialLoading(false), 200);
+      loaded.hero = true;
+      tryFinishLoading();
     }, (error) => {
       handleFirestoreError(error, OperationType.GET, 'config/hero');
-      setIsInitialLoading(false);
+      loaded.hero = true;
+      tryFinishLoading();
     });
 
     const unsubscribeAbout = onSnapshot(doc(db, 'config', 'about'), (snap) => {
@@ -121,8 +146,12 @@ export default function App() {
           about: data.about || data
         }));
       }
+      loaded.about = true;
+      tryFinishLoading();
     }, (error) => {
       handleFirestoreError(error, OperationType.GET, 'config/about');
+      loaded.about = true;
+      tryFinishLoading();
     });
 
     return () => {
@@ -174,7 +203,8 @@ export default function App() {
             <div className="flex items-center gap-3">
               <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
               <p className="text-[9px] md:text-[10px] text-red-500 uppercase tracking-widest font-medium leading-relaxed">
-                Firestore Quota Exceeded. If you just upgraded to Blaze, please wait 5-10 mins or click retry.
+                Firestore Quota Exceeded. (파이어베이스 할당량 초과) <br className="md:hidden" />
+                Blaze 플랜 결제 후라면 약 10~15분 후 '재시도'를 눌러주세요.
               </p>
             </div>
             <Button 
@@ -184,10 +214,10 @@ export default function App() {
                 clearQuotaError();
                 window.location.reload();
               }}
-              className="h-7 px-3 text-[9px] uppercase tracking-widest border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors shrink-0"
+              className="h-8 px-4 text-[10px] uppercase tracking-widest border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all font-bold shrink-0"
             >
               <RefreshCcw className="w-3 h-3 mr-2" />
-              Retry
+              Retry (재시도)
             </Button>
           </div>
         )}

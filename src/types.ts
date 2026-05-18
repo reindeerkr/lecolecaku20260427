@@ -66,6 +66,14 @@ export interface AppConfig {
     title: string;
     subtitle: string;
     image: string;
+    primaryButton?: {
+      text: string;
+      link: string;
+    };
+    secondaryButton?: {
+      text: string;
+      link: string;
+    };
   };
   about: {
     title: string;

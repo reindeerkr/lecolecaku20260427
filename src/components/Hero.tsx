@@ -1,13 +1,25 @@
 import { motion } from 'framer-motion';
 
 export default function Hero({ config, instagramUrl }: { 
-  config?: { title: string, subtitle: string, image: string },
+  config?: { 
+    title: string, 
+    subtitle: string, 
+    image: string,
+    primaryButton?: { text: string, link: string },
+    secondaryButton?: { text: string, link: string }
+  },
   instagramUrl?: string 
 }) {
   const title = config?.title || "프랑스에서 유학한\n프로 셰프의 감각적인 공간";
   const subtitle = config?.subtitle || "L'ecole Caku Baking Studio";
   const image = config?.image || "https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&q=80&w=2000";
+  
+  const primaryButtonText = config?.primaryButton?.text || "클래스 둘러보기";
+  const primaryButtonLink = config?.primaryButton?.link || "#classes";
+  
+  const secondaryButtonText = config?.secondaryButton?.text || "인스타그램 바로가기";
   const igLink = instagramUrl?.startsWith('http') ? instagramUrl : `https://instagram.com/${instagramUrl}`;
+  const secondaryButtonLink = config?.secondaryButton?.link || igLink;
 
   return (
     <section className="relative min-h-[90vh] md:h-[90vh] flex items-center justify-center overflow-hidden pt-20 md:pt-0">
@@ -51,18 +63,18 @@ export default function Hero({ config, instagramUrl }: {
            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
         >
           <a 
-            href="#classes" 
+            href={primaryButtonLink} 
             className="w-full sm:w-auto inline-block border border-brand-accent bg-brand-accent/10 backdrop-blur-sm text-brand-accent px-10 py-4 uppercase tracking-wider hover:bg-brand-accent hover:text-brand-ink transition-all duration-300 font-bold text-sm"
           >
-            클래스 둘러보기
+            {primaryButtonText}
           </a>
           <a 
-            href={igLink}
+            href={secondaryButtonLink}
             target="_blank"
             rel="noopener noreferrer"
             className="w-full sm:w-auto inline-block border border-white/30 bg-white/5 backdrop-blur-sm text-white/90 px-10 py-4 uppercase tracking-wider hover:bg-white/10 hover:text-white transition-all duration-300 font-medium text-sm"
           >
-            인스타그램 바로가기
+            {secondaryButtonText}
           </a>
         </motion.div>
       </div>

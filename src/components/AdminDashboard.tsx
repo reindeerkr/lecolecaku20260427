@@ -1126,6 +1126,56 @@ export default function AdminDashboard({ onExit }: { onExit: () => void }) {
                             </div>
                           </div>
                         </div>
+
+                        <div className="pt-4 border-t border-neutral-50 space-y-6">
+                          <div className="space-y-4">
+                            <Label className="text-[9px] uppercase tracking-widest text-brand-accent font-semibold">Primary Button (Left)</Label>
+                            <div className="grid grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <Label className="text-[8px] uppercase tracking-widest text-neutral-400">Label</Label>
+                                <Input 
+                                  value={config.hero.primaryButton?.text || ""}
+                                  onChange={(e) => setConfig({...config, hero: {...config.hero, primaryButton: {...(config.hero.primaryButton || {text: '클래스 둘러보기', link: '#classes'}), text: e.target.value}}})}
+                                  className="bg-neutral-50 border-neutral-100 focus:border-brand-accent h-10 text-xs"
+                                  placeholder="e.g. 클래스 둘러보기"
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label className="text-[8px] uppercase tracking-widest text-neutral-400">Link / Path</Label>
+                                <Input 
+                                  value={config.hero.primaryButton?.link || ""}
+                                  onChange={(e) => setConfig({...config, hero: {...config.hero, primaryButton: {...(config.hero.primaryButton || {text: '클래스 둘러보기', link: '#classes'}), link: e.target.value}}})}
+                                  className="bg-neutral-50 border-neutral-100 focus:border-brand-accent h-10 text-xs font-mono"
+                                  placeholder="#classes"
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="space-y-4">
+                            <Label className="text-[9px] uppercase tracking-widest text-neutral-400 font-semibold">Secondary Button (Right)</Label>
+                            <div className="grid grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <Label className="text-[8px] uppercase tracking-widest text-neutral-400">Label</Label>
+                                <Input 
+                                  value={config.hero.secondaryButton?.text || ""}
+                                  onChange={(e) => setConfig({...config, hero: {...config.hero, secondaryButton: {...(config.hero.secondaryButton || {text: '인스타그램 바로가기', link: 'https://instagram.com'}), text: e.target.value}}})}
+                                  className="bg-neutral-50 border-neutral-100 focus:border-brand-accent h-10 text-xs"
+                                  placeholder="e.g. 인스타그램 바로가기"
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label className="text-[8px] uppercase tracking-widest text-neutral-400">Link / URL</Label>
+                                <Input 
+                                  value={config.hero.secondaryButton?.link || ""}
+                                  onChange={(e) => setConfig({...config, hero: {...config.hero, secondaryButton: {...(config.hero.secondaryButton || {text: '인스타그램 바로가기', link: 'https://instagram.com'}), link: e.target.value}}})}
+                                  className="bg-neutral-50 border-neutral-100 focus:border-brand-accent h-10 text-xs font-mono"
+                                  placeholder="https://..."
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </CardContent>
                     </Card>
 

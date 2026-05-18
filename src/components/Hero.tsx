@@ -16,6 +16,7 @@ export default function Hero({ config, instagramUrl }: {
   
   const primaryButtonText = config?.primaryButton?.text || "클래스 둘러보기";
   const primaryButtonLink = config?.primaryButton?.link || "#classes";
+  const isPrimaryExternal = primaryButtonLink.startsWith('http') || primaryButtonLink.startsWith('//');
   
   const secondaryButtonText = config?.secondaryButton?.text || "인스타그램 바로가기";
   const igLink = instagramUrl?.startsWith('http') ? instagramUrl : `https://instagram.com/${instagramUrl}`;
@@ -64,6 +65,8 @@ export default function Hero({ config, instagramUrl }: {
         >
           <a 
             href={primaryButtonLink} 
+            target={isPrimaryExternal ? "_blank" : undefined}
+            rel={isPrimaryExternal ? "noopener noreferrer" : undefined}
             className="w-full sm:w-auto inline-block border border-brand-accent bg-brand-accent/10 backdrop-blur-sm text-brand-accent px-10 py-4 uppercase tracking-wider hover:bg-brand-accent hover:text-brand-ink transition-all duration-300 font-bold text-sm"
           >
             {primaryButtonText}

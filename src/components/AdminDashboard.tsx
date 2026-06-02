@@ -1141,12 +1141,12 @@ export default function AdminDashboard({ onExit }: { onExit: () => void }) {
                                 />
                               </div>
                               <div className="space-y-2">
-                                <Label className="text-[8px] uppercase tracking-widest text-neutral-400">Link / URL / Path</Label>
+                                <Label className="text-[8px] uppercase tracking-widest text-neutral-400">Link / URL</Label>
                                 <Input 
                                   value={config.hero.primaryButton?.link || ""}
                                   onChange={(e) => setConfig({...config, hero: {...config.hero, primaryButton: {...(config.hero.primaryButton || {text: '클래스 둘러보기', link: '#classes'}), link: e.target.value}}})}
                                   className="bg-neutral-50 border-neutral-100 focus:border-brand-accent h-10 text-xs font-mono"
-                                  placeholder="https://... or #classes"
+                                  placeholder="https://..."
                                 />
                               </div>
                             </div>
